@@ -9,18 +9,53 @@ import sys
 
 ser = None
 
+max_speed = 0.00
+min_speed = 2000.00
+
+max_out = 6000
+min_out = 500
+
+num_sample = 0
+
 if len(sys.argv) == 1:
-    print("No arguements - initializing serial")
+    print("No arguements - initializing default unix serial")
     ser = serial.Serial(
-        port = '/dev/ttyACM0', 
-        baudrate = 115200,
+        port='/dev/ttyACM0', 
+        baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
         timeout=1
         )
+elif len(sys.argv) == 2:
+    user_port=sys.argv[1]
+    print("Initialzing with device on port {}".format(user_port))
+    ser = serial.Serial(
+        port=user_port,
+        baudrate=115200,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=1
+        )
+elif len(sys.argv) == 4:
+    user_port=sys.argv[1]
+    min_val=int(sys.argv[2])
+    max_val=int(sys.argv[3])
+    print("Intializing with device on port {}, min: {}, max: {}".format(user_port,min_val,max_val))
+    ser = serial.Serial(
+        port=user_port,
+        baudrate=115200,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=1
+        )
+    max_out=max_val
+    min_out=min_val
 else:
     print("Not initializing serial")
+    print("Usage: broadband_sender.py [COM PORT] [MIN OUTPUT, MAX OUTPUT]")
 
 st = speedtest.Speedtest()
 
@@ -32,14 +67,6 @@ i = 0
 init_val = "0\n"
 if ser:
     ser.write(init_val.encode('utf-8'))
-
-max_speed = 0.00
-min_speed = 2000.00
-
-max_out = 6000
-min_out = 500
-
-num_sample = 0
 
 while True:
     print("Getting download speed...")
