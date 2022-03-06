@@ -80,14 +80,19 @@ while True:
 
     #Scale current download speed based on min/max speeds
     #Current Scale: 500 - Min, 6000 - Max
-    if num_sample < 5: 
-        adjusted_val = (max_out - min_out)/2
-    else:
-        adjusted_val = ((max_out - min_out)/(max_speed - min_speed))*(download_speed - min_speed) + min_out
+    #if num_sample < 5: 
+    #    adjusted_val = (max_out - min_out)/2
+    #else:
+    #    adjusted_val = ((max_out - min_out)/(max_speed - min_speed))*(download_speed - min_speed) + min_out
+    
+    real_min = 0
+    real_max = 1000
+    
+    adjusted_val = (max_out - min_out)/(1000)*download_speed + min_out
 
     output_val = str((int(adjusted_val))) + "\n"
     if ser:
-        print("Encoding: {} Mbit/s".format(str(int(adjusted_val))))
+        print("Encoding: {}".format(str(int(adjusted_val))))
         ser.write(output_val.encode('utf-8'))
     time.sleep(60)
 
